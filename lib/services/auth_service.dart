@@ -1,0 +1,109 @@
+import 'dart:async';
+
+import 'package:extension_google_sign_in_as_googleapis_auth/extension_google_sign_in_as_googleapis_auth.dart';
+import 'package:flutter/foundation.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:googleapis/drive/v3.dart' as drive;
+import 'package:googleapis_auth/googleapis_auth.dart' as auth;
+
+const List<String> driveScopes = <String>[drive.DriveApi.driveScope];
+
+class AuthService {
+  GoogleSignInAccount? currentUser;
+  GoogleSignInClientAuthorization? _authorization;
+  String? _serverClientId;
+
+  Future<void> initialize({String? clientId, String? serverClientId}) async {
+    _serverClientId = _cleanOAuthClientId(serverClientId);
+    final signIn = GoogleSignIn.instance;
+    await signIn.initialize(
+      clientId: _cleanOAuthClientId(clientId),
+      serverClientId: _serverClientId,
+    );
+
+    signIn.authenticationEvents
+        .listen((GoogleSignInAuthenticationEvent event) {
+          switch (event) {
+            case GoogleSignInAuthenticationEventSignIn():
+              currentUser = event.user;
+            case GoogleSignInAuthenticationEventSignOut():
+              currentUser = null;
+              _authorization = null;
+          }
+        })
+        .onError((Object error) {
+          debugPrint('Google sign-in event error: $error');
+        });
+
+    final lightweight = signIn.attemptLightweightAuthentication();
+    if (lightweight != null) {
+      currentUser = await lightweight;
+      if (currentUser != null) {
+        _authorization = await currentUser!.authorizationClient
+            .authorizationForScopes(driveScopes);
+      }
+    }
+  }
+
+  bool get isSignedIn => currentUser != null;
+
+  Future<GoogleSignInAccount> signIn() async {
+    if (_serverClientId == null) {
+      throw StateError(
+        'Missing Google serverClientId. Add your Web OAuth client ID in assets/app_config.json.',
+      );
+    }
+
+    await GoogleSignIn.instance.signOut();
+    _authorization = null;
+    final user = await GoogleSignIn.instance.authenticate(
+      scopeHint: driveScopes,
+    );
+    currentUser = user;
+    _authorization = await _authorize(user, prompt: true);
+    return user;
+  }
+
+  Future<void> signOut() async {
+    await GoogleSignIn.instance.disconnect();
+    currentUser = null;
+    _authorization = null;
+  }
+
+  Future<auth.AuthClient> authClient() async {
+    final user = currentUser;
+    if (user == null) {
+      throw StateError('Please sign in first.');
+    }
+
+    _authorization ??= await _authorize(user, prompt: true);
+    final authorization = _authorization;
+    if (authorization == null) {
+      throw StateError('Drive permission was not granted.');
+    }
+
+    return authorization.authClient(scopes: driveScopes);
+  }
+
+  Future<GoogleSignInClientAuthorization?> _authorize(
+    GoogleSignInAccount user, {
+    required bool prompt,
+  }) async {
+    final existing = await user.authorizationClient.authorizationForScopes(
+      driveScopes,
+    );
+    if (existing != null || !prompt) return existing;
+    return user.authorizationClient.authorizeScopes(driveScopes);
+  }
+
+  String? _cleanOAuthClientId(String? value) {
+    final trimmed = value?.trim();
+    if (trimmed == null ||
+        trimmed.isEmpty ||
+        trimmed.startsWith('YOUR_') ||
+        trimmed.contains('PASTE_')) {
+      return null;
+    }
+    return trimmed;
+  }
+}

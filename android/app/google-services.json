@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "382848135733",
+    "firebase_url": "https://drive2share-159d9-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "drive2share-159d9",
+    "storage_bucket": "drive2share-159d9.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:382848135733:android:fa4a6cf07d47bfe06b777c",
+        "android_client_info": {
+          "package_name": "com.drive2share.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "382848135733-ge8l22knm252mr130502d4pp19a4kb5e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBIoxVnOAaNpZX0Cg0AZBCOn9ga9EtYduI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "382848135733-ge8l22knm252mr130502d4pp19a4kb5e.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "382848135733-3747k9hc96hiib33h1onk9ups48u7ggi.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.drive2share.app"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

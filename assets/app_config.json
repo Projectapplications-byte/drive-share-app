@@ -1,0 +1,59 @@
+{
+  "appName": "Drive2Share",
+  "splash": {
+    "subtitle": "Import, preview, and share files securely"
+  },
+  "login": {
+    "title": "Welcome to Drive2Share",
+    "subtitle": "Sign in with Google to browse your files, import them into private app storage, preview them, and share safely.",
+    "googleButtonText": "Continue with Google"
+  },
+  "home": {
+    "greetingPrefix": "Hello",
+    "recentSectionTitle": "Recently imported",
+    "viewAllText": "View all",
+    "emptyRecentText": "Imported files will appear here",
+    "actions": [
+      {
+        "id": "browse",
+        "text": "My files",
+        "enabled": true
+      },
+      {
+        "id": "device",
+        "text": "Create",
+        "enabled": true
+      },
+      {
+        "id": "recent",
+        "text": "Recent",
+        "enabled": true
+      },
+      {
+        "id": "sign_out",
+        "text": "Sign out",
+        "enabled": false
+      }
+    ]
+  },
+  "screens": {
+    "filesTitle": "Files",
+    "filesEmptyText": "No files found",
+    "recentTitle": "Recent files",
+    "recentEmptyText": "No imported files yet",
+    "previewTitle": "Preview"
+  },
+  "sharing": {
+    "shareButtonText": "Share",
+    "openButtonText": "Open"
+  },
+  "google": {
+    "clientId": "",
+    "serverClientId": "612653209431-fa4guu6rdte33lunoru5171o4udg67jh.apps.googleusercontent.com"
+  },
+  "driveFolder": {
+    "name": "Drive2Share",
+    "parentId": "root"
+  },
+  "allowedMimeTypes": []
+}
