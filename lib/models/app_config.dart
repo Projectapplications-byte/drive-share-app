@@ -1,6 +1,6 @@
 class AppConfig {
   const AppConfig({
-    this.appName = 'Drive2Share',
+    this.appName = 'Secure2share',
     this.splash = const SplashConfig(),
     this.login = const LoginConfig(),
     this.home = const HomeConfig(),
@@ -8,6 +8,7 @@ class AppConfig {
     this.sharing = const SharingConfig(),
     this.google = const GoogleConfig(),
     this.driveFolder = const DriveFolderConfig(),
+    this.firebase = const FirebaseDatabaseConfig(),
     this.allowedMimeTypes = const <String>[],
   });
 
@@ -19,11 +20,12 @@ class AppConfig {
   final SharingConfig sharing;
   final GoogleConfig google;
   final DriveFolderConfig driveFolder;
+  final FirebaseDatabaseConfig firebase;
   final List<String> allowedMimeTypes;
 
   factory AppConfig.fromJson(Map<String, dynamic> json) {
     return AppConfig(
-      appName: json['appName'] as String? ?? 'Drive2Share',
+      appName: json['appName'] as String? ?? 'Secure2share',
       splash: SplashConfig.fromJson(json['splash'] as Map<String, dynamic>?),
       login: LoginConfig.fromJson(json['login'] as Map<String, dynamic>?),
       home: HomeConfig.fromJson(json['home'] as Map<String, dynamic>?),
@@ -33,12 +35,167 @@ class AppConfig {
       driveFolder: DriveFolderConfig.fromJson(
         json['driveFolder'] as Map<String, dynamic>?,
       ),
+      firebase: FirebaseDatabaseConfig.fromJson(
+        json['firebase'] as Map<String, dynamic>?,
+      ),
       allowedMimeTypes:
           (json['allowedMimeTypes'] as List<dynamic>?)
               ?.whereType<String>()
               .toList() ??
           const <String>[],
     );
+  }
+}
+
+class FirebaseDatabaseConfig {
+  const FirebaseDatabaseConfig({
+    this.userCollection = 'users',
+    this.bankDetailsCollection = 'bankDetails',
+    this.aadhaarDetailsCollection = 'aadhaarDetails',
+    this.panDetailsCollection = 'panDetails',
+    this.passportDetailsCollection = 'passportDetails',
+    this.drivingLicenseDetailsCollection = 'drivingLicenseDetails',
+    this.voterIdDetailsCollection = 'voterIdDetails',
+    this.upiDetailsCollection = 'upiDetails',
+    this.loginDetailsCollection = 'loginDetails',
+    this.addressDetailsCollection = 'addressDetails',
+    this.enableTableCollections = true,
+    this.bankDetailsTableCollection = 'bankDetailsTable',
+    this.aadhaarDetailsTableCollection = 'aadhaarDetailsTable',
+    this.panDetailsTableCollection = 'panDetailsTable',
+    this.passportDetailsTableCollection = 'passportDetailsTable',
+    this.drivingLicenseDetailsTableCollection = 'drivingLicenseDetailsTable',
+    this.voterIdDetailsTableCollection = 'voterIdDetailsTable',
+    this.upiDetailsTableCollection = 'upiDetailsTable',
+    this.loginDetailsTableCollection = 'loginDetailsTable',
+    this.addressDetailsTableCollection = 'addressDetailsTable',
+  });
+
+  final String userCollection;
+  final String bankDetailsCollection;
+  final String aadhaarDetailsCollection;
+  final String panDetailsCollection;
+  final String passportDetailsCollection;
+  final String drivingLicenseDetailsCollection;
+  final String voterIdDetailsCollection;
+  final String upiDetailsCollection;
+  final String loginDetailsCollection;
+  final String addressDetailsCollection;
+  final bool enableTableCollections;
+  final String bankDetailsTableCollection;
+  final String aadhaarDetailsTableCollection;
+  final String panDetailsTableCollection;
+  final String passportDetailsTableCollection;
+  final String drivingLicenseDetailsTableCollection;
+  final String voterIdDetailsTableCollection;
+  final String upiDetailsTableCollection;
+  final String loginDetailsTableCollection;
+  final String addressDetailsTableCollection;
+
+  factory FirebaseDatabaseConfig.fromJson(Map<String, dynamic>? json) {
+    return FirebaseDatabaseConfig(
+      userCollection: _readName(json, 'userCollection', 'users'),
+      bankDetailsCollection: _readName(
+        json,
+        'bankDetailsCollection',
+        'bankDetails',
+      ),
+      aadhaarDetailsCollection: _readName(
+        json,
+        'aadhaarDetailsCollection',
+        'aadhaarDetails',
+      ),
+      panDetailsCollection: _readName(
+        json,
+        'panDetailsCollection',
+        'panDetails',
+      ),
+      passportDetailsCollection: _readName(
+        json,
+        'passportDetailsCollection',
+        'passportDetails',
+      ),
+      drivingLicenseDetailsCollection: _readName(
+        json,
+        'drivingLicenseDetailsCollection',
+        'drivingLicenseDetails',
+      ),
+      voterIdDetailsCollection: _readName(
+        json,
+        'voterIdDetailsCollection',
+        'voterIdDetails',
+      ),
+      upiDetailsCollection: _readName(
+        json,
+        'upiDetailsCollection',
+        'upiDetails',
+      ),
+      loginDetailsCollection: _readName(
+        json,
+        'loginDetailsCollection',
+        'loginDetails',
+      ),
+      addressDetailsCollection: _readName(
+        json,
+        'addressDetailsCollection',
+        'addressDetails',
+      ),
+      enableTableCollections: json?['enableTableCollections'] as bool? ?? true,
+      bankDetailsTableCollection: _readName(
+        json,
+        'bankDetailsTableCollection',
+        'bankDetailsTable',
+      ),
+      aadhaarDetailsTableCollection: _readName(
+        json,
+        'aadhaarDetailsTableCollection',
+        'aadhaarDetailsTable',
+      ),
+      panDetailsTableCollection: _readName(
+        json,
+        'panDetailsTableCollection',
+        'panDetailsTable',
+      ),
+      passportDetailsTableCollection: _readName(
+        json,
+        'passportDetailsTableCollection',
+        'passportDetailsTable',
+      ),
+      drivingLicenseDetailsTableCollection: _readName(
+        json,
+        'drivingLicenseDetailsTableCollection',
+        'drivingLicenseDetailsTable',
+      ),
+      voterIdDetailsTableCollection: _readName(
+        json,
+        'voterIdDetailsTableCollection',
+        'voterIdDetailsTable',
+      ),
+      upiDetailsTableCollection: _readName(
+        json,
+        'upiDetailsTableCollection',
+        'upiDetailsTable',
+      ),
+      loginDetailsTableCollection: _readName(
+        json,
+        'loginDetailsTableCollection',
+        'loginDetailsTable',
+      ),
+      addressDetailsTableCollection: _readName(
+        json,
+        'addressDetailsTableCollection',
+        'addressDetailsTable',
+      ),
+    );
+  }
+
+  static String _readName(
+    Map<String, dynamic>? json,
+    String key,
+    String fallback,
+  ) {
+    final value = (json?[key] as String?)?.trim();
+    return value?.isNotEmpty == true ? value! : fallback;
   }
 }
 
@@ -57,7 +214,7 @@ class GoogleConfig {
 }
 
 class DriveFolderConfig {
-  const DriveFolderConfig({this.name = 'Drive2Share', this.parentId = 'root'});
+  const DriveFolderConfig({this.name = 'Secure2share', this.parentId = 'root'});
 
   final String name;
   final String parentId;
@@ -73,7 +230,7 @@ class DriveFolderConfig {
     final name = (json?['name'] as String?)?.trim();
     final parentId = (json?['parentId'] as String?)?.trim();
     return DriveFolderConfig(
-      name: name?.isNotEmpty == true ? name! : 'Drive2Share',
+      name: name?.isNotEmpty == true ? name! : 'Secure2share',
       parentId: parentId?.isNotEmpty == true ? parentId! : 'root',
     );
   }
@@ -81,7 +238,7 @@ class DriveFolderConfig {
 
 class SplashConfig {
   const SplashConfig({
-    this.subtitle = 'Import, preview, and share files securely',
+    this.subtitle = 'Create, save, and share private files securely',
   });
 
   final String subtitle;
@@ -90,14 +247,14 @@ class SplashConfig {
     return SplashConfig(
       subtitle:
           json?['subtitle'] as String? ??
-          'Import, preview, and share files securely',
+          'Create, save, and share private files securely',
     );
   }
 }
 
 class LoginConfig {
   const LoginConfig({
-    this.title = 'Welcome to Drive2Share',
+    this.title = 'Welcome to Secure2share',
     this.subtitle =
         'Sign in with Google to browse your files, import them into private app storage, preview them, and share safely.',
     this.googleButtonText = 'Continue with Google',
@@ -109,7 +266,7 @@ class LoginConfig {
 
   factory LoginConfig.fromJson(Map<String, dynamic>? json) {
     return LoginConfig(
-      title: json?['title'] as String? ?? 'Welcome to Drive2Share',
+      title: json?['title'] as String? ?? 'Welcome to Secure2share',
       subtitle:
           json?['subtitle'] as String? ??
           'Sign in with Google to browse your files, import them into private app storage, preview them, and share safely.',
@@ -122,14 +279,14 @@ class LoginConfig {
 class HomeConfig {
   const HomeConfig({
     this.greetingPrefix = 'Hello',
-    this.recentSectionTitle = 'Recently imported',
+    this.recentSectionTitle = 'Saved secure files',
     this.viewAllText = 'View all',
-    this.emptyRecentText = 'Imported files will appear here',
+    this.emptyRecentText = 'Secure details will appear here',
     this.actions = const <String, HomeActionConfig>{
-      'browse': HomeActionConfig(text: 'Browse', enabled: true),
-      'device': HomeActionConfig(text: 'Device', enabled: true),
-      'recent': HomeActionConfig(text: 'Recent', enabled: true),
-      'sign_out': HomeActionConfig(text: 'Sign out', enabled: true),
+      'browse': HomeActionConfig(text: 'My files', enabled: false),
+      'device': HomeActionConfig(text: 'Create', enabled: false),
+      'recent': HomeActionConfig(text: 'Recent files', enabled: true),
+      'sign_out': HomeActionConfig(text: 'Sign out', enabled: false),
     },
   });
 
@@ -157,11 +314,11 @@ class HomeConfig {
     return HomeConfig(
       greetingPrefix: json?['greetingPrefix'] as String? ?? 'Hello',
       recentSectionTitle:
-          json?['recentSectionTitle'] as String? ?? 'Recently imported',
+          json?['recentSectionTitle'] as String? ?? 'Saved secure files',
       viewAllText: json?['viewAllText'] as String? ?? 'View all',
       emptyRecentText:
           json?['emptyRecentText'] as String? ??
-          'Imported files will appear here',
+          'Secure details will appear here',
       actions: actions,
     );
   }
@@ -180,7 +337,7 @@ class ScreenConfig {
     this.filesEmptyText = 'No files found',
     this.recentTitle = 'Recent files',
     this.recentEmptyText = 'No imported files yet',
-    this.previewTitle = 'Preview',
+    this.previewTitle = 'File details',
   });
 
   final String filesTitle;
@@ -196,7 +353,7 @@ class ScreenConfig {
       recentTitle: json?['recentTitle'] as String? ?? 'Recent files',
       recentEmptyText:
           json?['recentEmptyText'] as String? ?? 'No imported files yet',
-      previewTitle: json?['previewTitle'] as String? ?? 'Preview',
+      previewTitle: json?['previewTitle'] as String? ?? 'File details',
     );
   }
 }

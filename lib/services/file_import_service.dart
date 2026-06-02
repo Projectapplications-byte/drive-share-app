@@ -10,12 +10,18 @@ import 'package:uuid/uuid.dart';
 import '../models/app_config.dart';
 import '../models/drive_file_item.dart';
 import '../models/recent_file.dart';
+import '../models/secure_detail.dart';
 import '../utils/mime_type_utils.dart';
 import 'drive_service.dart';
+import 'firebase_file_service.dart';
 import 'recent_file_store.dart';
 
 class FileImportService {
-  FileImportService({required this.config, required this.recentFileStore});
+  FileImportService({
+    required this.config,
+    required this.recentFileStore,
+    required this.firebaseFileService,
+  });
 
   static const MethodChannel _shareChannel = MethodChannel(
     'drive2share/share_targets',
@@ -23,6 +29,7 @@ class FileImportService {
 
   final AppConfig config;
   final RecentFileStore recentFileStore;
+  final FirebaseFileService firebaseFileService;
   final Uuid _uuid = const Uuid();
 
   Future<RecentFile> createTextFile({
@@ -49,6 +56,7 @@ class FileImportService {
       importedAtMillis: now,
     );
     await recentFileStore.save(recent);
+    await firebaseFileService.uploadRecentFile(recent);
     return recent;
   }
 
@@ -76,6 +84,7 @@ class FileImportService {
       importedAtMillis: DateTime.now().millisecondsSinceEpoch,
     );
     await recentFileStore.save(recent);
+    await firebaseFileService.uploadRecentFile(recent);
     return recent;
   }
 
@@ -91,6 +100,7 @@ class FileImportService {
     final downloaded = await driveService.downloadFile(item);
     final recent = await _saveDriveImport(item, downloaded);
     await recentFileStore.save(recent);
+    await firebaseFileService.uploadRecentFile(recent);
     return recent;
   }
 
@@ -115,6 +125,7 @@ class FileImportService {
       final downloaded = await driveService.downloadFile(item);
       final recent = await _saveDriveImport(item, downloaded);
       await recentFileStore.save(recent);
+      await firebaseFileService.uploadRecentFile(recent);
       imported.add(recent);
     }
 
@@ -168,12 +179,37 @@ class FileImportService {
     }
   }
 
+  Future<void> syncRecentFile(RecentFile file) {
+    return firebaseFileService.uploadRecentFile(file);
+  }
+
   Future<void> deleteRecentFile(RecentFile file) async {
+    await firebaseFileService.deleteRecentFile(file);
     await recentFileStore.delete(file.id);
 
     final localFile = File(file.localPath);
     if (await localFile.exists()) {
       await localFile.delete();
+    }
+  }
+
+  Future<void> shareSecureDetail(
+    SecureDetail detail, {
+    bool maskSecrets = true,
+  }) async {
+    if (!Platform.isAndroid) {
+      throw UnsupportedError(
+        'WhatsApp and Telegram sharing is currently available on Android.',
+      );
+    }
+
+    try {
+      await _shareChannel.invokeMethod<void>('shareText', <String, Object?>{
+        'text': detail.toShareText(maskSecrets: maskSecrets),
+        'subject': detail.title,
+      });
+    } on PlatformException catch (error) {
+      throw StateError(error.message ?? 'Unable to share these details.');
     }
   }
 

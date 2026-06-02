@@ -1,42 +1,42 @@
 {
   "project_info": {
-    "project_number": "382848135733",
-    "firebase_url": "https://drive2share-159d9-default-rtdb.asia-southeast1.firebasedatabase.app",
-    "project_id": "drive2share-159d9",
-    "storage_bucket": "drive2share-159d9.firebasestorage.app"
+    "project_number": "672581368220",
+    "project_id": "to-share-37301",
+    "storage_bucket": "to-share-37301.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:382848135733:android:fa4a6cf07d47bfe06b777c",
+        "mobilesdk_app_id": "1:672581368220:android:54c3fb0e33137683113059",
         "android_client_info": {
-          "package_name": "com.drive2share.app"
+          "package_name": "com.secure2share.app"
         }
       },
       "oauth_client": [
         {
-          "client_id": "382848135733-ge8l22knm252mr130502d4pp19a4kb5e.apps.googleusercontent.com",
+          "client_id": "672581368220-eraahca7rpj0fvk6pg9ob7k68mke2c2c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.secure2share.app",
+            "certificate_hash": "b36a17df0c2ece20e8dd533d59efda71f70ee404"
+          }
+        },
+        {
+          "client_id": "672581368220-kngu6trj4liaoqv4cq8679cvvnaotvcs.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBIoxVnOAaNpZX0Cg0AZBCOn9ga9EtYduI"
+          "current_key": "AIzaSyB8vTE_DxSoKglO-v70vBJ9XWTMiTCx0H0"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "382848135733-ge8l22knm252mr130502d4pp19a4kb5e.apps.googleusercontent.com",
+              "client_id": "672581368220-kngu6trj4liaoqv4cq8679cvvnaotvcs.apps.googleusercontent.com",
               "client_type": 3
-            },
-            {
-              "client_id": "382848135733-3747k9hc96hiib33h1onk9ups48u7ggi.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.drive2share.app"
-              }
             }
           ]
         }

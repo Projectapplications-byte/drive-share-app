@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
 
+import 'firebase_options.dart';
 import 'models/app_config.dart';
+import 'screens/app_lock_screen.dart';
 import 'screens/splash_screen.dart';
 import 'services/app_config_service.dart';
 import 'services/auth_service.dart';
 import 'services/drive_service.dart';
+import 'services/firebase_file_service.dart';
 import 'services/file_import_service.dart';
 import 'services/recent_file_store.dart';
 import 'widgets/app_logo.dart';
@@ -15,11 +19,15 @@ Future<void> main() async {
 }
 
 Future<AppDependencies> _loadDependencies() async {
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
   final config = await AppConfigService.load();
   final recentFileStore = RecentFileStore();
   await recentFileStore.init();
 
   final authService = AuthService();
+  final firebaseFileService = FirebaseFileService(config: config.firebase);
+  await firebaseFileService.ensureSignedIn();
 
   return AppDependencies(
     config: config,
@@ -28,7 +36,9 @@ Future<AppDependencies> _loadDependencies() async {
     fileImportService: FileImportService(
       config: config,
       recentFileStore: recentFileStore,
+      firebaseFileService: firebaseFileService,
     ),
+    firebaseFileService: firebaseFileService,
     recentFileStore: recentFileStore,
   );
 }
@@ -157,7 +167,7 @@ class Drive2ShareApp extends StatelessWidget {
         themeMode: ThemeMode.system,
         theme: _lightTheme(),
         darkTheme: _darkTheme(),
-        home: const SplashScreen(),
+        home: const AppLockScreen(child: SplashScreen()),
       ),
     );
   }
@@ -171,27 +181,73 @@ ThemeData _lightTheme() {
   return ThemeData(
     useMaterial3: true,
     colorScheme: colorScheme,
-    scaffoldBackgroundColor: const Color(0xFFF6F8FA),
+    scaffoldBackgroundColor: const Color(0xFFF7FAF9),
     appBarTheme: const AppBarTheme(centerTitle: false),
     cardTheme: CardThemeData(
       elevation: 0,
       margin: EdgeInsets.zero,
+      color: colorScheme.surface,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(8),
         side: BorderSide(color: colorScheme.outlineVariant),
+      ),
+    ),
+    inputDecorationTheme: InputDecorationTheme(
+      filled: true,
+      fillColor: colorScheme.surface,
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: BorderSide(color: colorScheme.outlineVariant),
+      ),
+    ),
+    bottomSheetTheme: BottomSheetThemeData(
+      backgroundColor: colorScheme.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(18)),
       ),
     ),
   );
 }
 
 ThemeData _darkTheme() {
+  final colorScheme = ColorScheme.fromSeed(
+    seedColor: const Color(0xFF65D5DE),
+    brightness: Brightness.dark,
+  );
   return ThemeData(
     useMaterial3: true,
-    colorScheme: ColorScheme.fromSeed(
-      seedColor: const Color(0xFF65D5DE),
-      brightness: Brightness.dark,
-    ),
+    colorScheme: colorScheme,
+    scaffoldBackgroundColor: const Color(0xFF071013),
     appBarTheme: const AppBarTheme(centerTitle: false),
+    cardTheme: CardThemeData(
+      elevation: 0,
+      margin: EdgeInsets.zero,
+      color: const Color(0xFF0E171A),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+        side: const BorderSide(color: Color(0xFF26343A)),
+      ),
+    ),
+    inputDecorationTheme: InputDecorationTheme(
+      filled: true,
+      fillColor: const Color(0xFF0E171A),
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: const BorderSide(color: Color(0xFF2F4047)),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: BorderSide(color: colorScheme.primary, width: 1.4),
+      ),
+    ),
+    bottomSheetTheme: const BottomSheetThemeData(
+      backgroundColor: Color(0xFF0E171A),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(18)),
+      ),
+    ),
   );
 }
 
@@ -201,6 +257,7 @@ class AppDependencies {
     required this.authService,
     required this.driveService,
     required this.fileImportService,
+    required this.firebaseFileService,
     required this.recentFileStore,
   });
 
@@ -208,6 +265,7 @@ class AppDependencies {
   final AuthService authService;
   final DriveService driveService;
   final FileImportService fileImportService;
+  final FirebaseFileService firebaseFileService;
   final RecentFileStore recentFileStore;
 }
 

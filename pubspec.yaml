@@ -1,5 +1,5 @@
 name: drive2share
-description: "Drive2Share Flutter app for Android and iOS."
+description: "Secure2share Flutter app for Android and iOS."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -54,6 +54,7 @@ dependencies:
   cloud_firestore: ^6.4.1
   firebase_storage: ^13.4.1
   firebase_auth: ^6.5.1
+  local_auth: ^3.0.1
 
 dev_dependencies:
   flutter_test:
@@ -82,6 +83,8 @@ flutter:
 
   assets:
     - assets/app_config.json
+    - assets/branding/secure2share_logo.png
+    - assets/branding/secure2share_mark.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:

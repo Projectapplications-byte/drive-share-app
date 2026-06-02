@@ -2,6 +2,7 @@ import 'package:path/path.dart' as p;
 import 'package:sqflite/sqflite.dart';
 
 import '../models/recent_file.dart';
+import '../models/secure_detail.dart';
 
 class RecentFileStore {
   Database? _database;
@@ -10,14 +11,18 @@ class RecentFileStore {
     final dbPath = await getDatabasesPath();
     _database = await openDatabase(
       p.join(dbPath, 'drive2share_flutter.db'),
-      version: 2,
+      version: 3,
       onCreate: (db, version) async {
         await _createRecentFilesTable(db);
         await _createSettingsTable(db);
+        await _createSecureDetailsTable(db);
       },
       onUpgrade: (db, oldVersion, newVersion) async {
         if (oldVersion < 2) {
           await _createSettingsTable(db);
+        }
+        if (oldVersion < 3) {
+          await _createSecureDetailsTable(db);
         }
       },
     );
@@ -43,6 +48,19 @@ class RecentFileStore {
           CREATE TABLE IF NOT EXISTS app_settings(
             key TEXT PRIMARY KEY,
             value TEXT NOT NULL
+          )
+        ''');
+  }
+
+  Future<void> _createSecureDetailsTable(Database db) async {
+    await db.execute('''
+          CREATE TABLE IF NOT EXISTS secure_details(
+            id TEXT PRIMARY KEY,
+            type TEXT NOT NULL,
+            title TEXT NOT NULL,
+            dataJson TEXT NOT NULL,
+            createdAtMillis INTEGER NOT NULL,
+            updatedAtMillis INTEGER NOT NULL
           )
         ''');
   }
@@ -77,6 +95,31 @@ class RecentFileStore {
 
   Future<void> delete(String id) async {
     await _db.delete('recent_files', where: 'id = ?', whereArgs: <Object?>[id]);
+  }
+
+  Future<void> saveSecureDetail(SecureDetail detail) async {
+    await _db.insert(
+      'secure_details',
+      detail.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  Future<List<SecureDetail>> listSecureDetails({int? limit}) async {
+    final rows = await _db.query(
+      'secure_details',
+      orderBy: 'createdAtMillis DESC',
+      limit: limit,
+    );
+    return rows.map(SecureDetail.fromMap).toList();
+  }
+
+  Future<void> deleteSecureDetail(String id) async {
+    await _db.delete(
+      'secure_details',
+      where: 'id = ?',
+      whereArgs: <Object?>[id],
+    );
   }
 
   Future<String?> getSetting(String key) async {

@@ -1,32 +1,32 @@
 {
-  "appName": "Drive2Share",
+  "appName": "Secure2share",
   "splash": {
-    "subtitle": "Import, preview, and share files securely"
+    "subtitle": "Create, save, and share private files securely"
   },
   "login": {
-    "title": "Welcome to Drive2Share",
+    "title": "Welcome to Secure2share",
     "subtitle": "Sign in with Google to browse your files, import them into private app storage, preview them, and share safely.",
     "googleButtonText": "Continue with Google"
   },
   "home": {
     "greetingPrefix": "Hello",
-    "recentSectionTitle": "Recently imported",
+    "recentSectionTitle": "Saved secure files",
     "viewAllText": "View all",
-    "emptyRecentText": "Imported files will appear here",
+    "emptyRecentText": "Secure details will appear here",
     "actions": [
       {
         "id": "browse",
         "text": "My files",
-        "enabled": true
+        "enabled": false
       },
       {
         "id": "device",
         "text": "Create",
-        "enabled": true
+        "enabled": false
       },
       {
         "id": "recent",
-        "text": "Recent",
+        "text": "Recent files",
         "enabled": true
       },
       {
@@ -41,7 +41,7 @@
     "filesEmptyText": "No files found",
     "recentTitle": "Recent files",
     "recentEmptyText": "No imported files yet",
-    "previewTitle": "Preview"
+    "previewTitle": "File details"
   },
   "sharing": {
     "shareButtonText": "Share",
@@ -49,11 +49,33 @@
   },
   "google": {
     "clientId": "",
-    "serverClientId": "612653209431-fa4guu6rdte33lunoru5171o4udg67jh.apps.googleusercontent.com"
+    "serverClientId": "672581368220-kngu6trj4liaoqv4cq8679cvvnaotvcs.apps.googleusercontent.com"
   },
   "driveFolder": {
-    "name": "Drive2Share",
+    "name": "Secure2share",
     "parentId": "root"
+  },
+  "firebase": {
+    "userCollection": "users",
+    "bankDetailsCollection": "bankDetails",
+    "aadhaarDetailsCollection": "aadhaarDetails",
+    "panDetailsCollection": "panDetails",
+    "passportDetailsCollection": "passportDetails",
+    "drivingLicenseDetailsCollection": "drivingLicenseDetails",
+    "voterIdDetailsCollection": "voterIdDetails",
+    "upiDetailsCollection": "upiDetails",
+    "loginDetailsCollection": "loginDetails",
+    "addressDetailsCollection": "addressDetails",
+    "enableTableCollections": true,
+    "bankDetailsTableCollection": "bankDetailsTable",
+    "aadhaarDetailsTableCollection": "aadhaarDetailsTable",
+    "panDetailsTableCollection": "panDetailsTable",
+    "passportDetailsTableCollection": "passportDetailsTable",
+    "drivingLicenseDetailsTableCollection": "drivingLicenseDetailsTable",
+    "voterIdDetailsTableCollection": "voterIdDetailsTable",
+    "upiDetailsTableCollection": "upiDetailsTable",
+    "loginDetailsTableCollection": "loginDetailsTable",
+    "addressDetailsTableCollection": "addressDetailsTable"
   },
   "allowedMimeTypes": []
 }

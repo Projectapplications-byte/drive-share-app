@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../models/drive_file_item.dart';
 import '../models/recent_file.dart';
+import '../models/secure_detail.dart';
 import '../utils/format_utils.dart';
 import '../utils/mime_type_utils.dart';
 
@@ -99,6 +100,88 @@ class RecentFileTile extends StatelessWidget {
   }
 }
 
+class SecureDetailTile extends StatelessWidget {
+  const SecureDetailTile({
+    super.key,
+    required this.detail,
+    required this.onOpen,
+    required this.onShare,
+    this.onDelete,
+  });
+
+  final SecureDetail detail;
+  final VoidCallback onOpen;
+  final VoidCallback onShare;
+  final VoidCallback? onDelete;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 10),
+      child: ListTile(
+        leading: _SecureDetailIcon(type: detail.type),
+        title: Text(detail.title, maxLines: 1, overflow: TextOverflow.ellipsis),
+        subtitle: Text(_subtitle, maxLines: 2, overflow: TextOverflow.ellipsis),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            IconButton(
+              tooltip: 'Share',
+              onPressed: onShare,
+              icon: const Icon(Icons.ios_share_outlined),
+            ),
+            if (onDelete != null)
+              IconButton(
+                tooltip: 'Delete',
+                onPressed: onDelete,
+                icon: const Icon(Icons.delete_outline),
+              ),
+          ],
+        ),
+        onTap: onOpen,
+      ),
+    );
+  }
+
+  String get _subtitle {
+    final name = detail.fields['name'];
+    final savedAt = FormatUtils.dateTimeFromMillis(detail.createdAtMillis);
+    if (name == null || name.isEmpty) return 'Saved $savedAt';
+    return '$name\nSaved $savedAt';
+  }
+}
+
+class _SecureDetailIcon extends StatelessWidget {
+  const _SecureDetailIcon({required this.type});
+
+  final SecureDetailType type;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final icon = switch (type) {
+      SecureDetailType.bank => Icons.account_balance_outlined,
+      SecureDetailType.aadhaar => Icons.badge_outlined,
+      SecureDetailType.pan => Icons.credit_card_outlined,
+      SecureDetailType.passport => Icons.flight_takeoff_outlined,
+      SecureDetailType.drivingLicense => Icons.directions_car_outlined,
+      SecureDetailType.voterId => Icons.how_to_vote_outlined,
+      SecureDetailType.upi => Icons.currency_rupee_outlined,
+      SecureDetailType.login => Icons.key_outlined,
+      SecureDetailType.address => Icons.location_on_outlined,
+    };
+    return Container(
+      width: 48,
+      height: 48,
+      decoration: BoxDecoration(
+        color: colorScheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Icon(icon, color: colorScheme.primary),
+    );
+  }
+}
+
 class _FileIcon extends StatelessWidget {
   const _FileIcon({required this.mimeType, required this.fileName});
 
@@ -113,7 +196,7 @@ class _FileIcon extends StatelessWidget {
       height: 48,
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerHighest,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(8),
       ),
       child: Icon(
         MimeTypeUtils.iconFor(mimeType, fileName),

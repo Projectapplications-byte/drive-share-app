@@ -50,12 +50,11 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBIoxVnOAaNpZX0Cg0AZBCOn9ga9EtYduI',
-    appId: '1:382848135733:android:fa4a6cf07d47bfe06b777c',
-    messagingSenderId: '382848135733',
-    projectId: 'drive2share-159d9',
-    databaseURL: 'https://drive2share-159d9-default-rtdb.asia-southeast1.firebasedatabase.app',
-    storageBucket: 'drive2share-159d9.firebasestorage.app',
+    apiKey: 'AIzaSyB8vTE_DxSoKglO-v70vBJ9XWTMiTCx0H0',
+    appId: '1:672581368220:android:54c3fb0e33137683113059',
+    messagingSenderId: '672581368220',
+    projectId: 'to-share-37301',
+    storageBucket: 'to-share-37301.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
@@ -63,10 +62,11 @@ class DefaultFirebaseOptions {
     appId: '1:382848135733:ios:c3de789759089e9d6b777c',
     messagingSenderId: '382848135733',
     projectId: 'drive2share-159d9',
-    databaseURL: 'https://drive2share-159d9-default-rtdb.asia-southeast1.firebasedatabase.app',
+    databaseURL:
+        'https://drive2share-159d9-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'drive2share-159d9.firebasestorage.app',
-    iosClientId: '382848135733-3747k9hc96hiib33h1onk9ups48u7ggi.apps.googleusercontent.com',
+    iosClientId:
+        '382848135733-3747k9hc96hiib33h1onk9ups48u7ggi.apps.googleusercontent.com',
     iosBundleId: 'com.drive2share.app',
   );
-
 }

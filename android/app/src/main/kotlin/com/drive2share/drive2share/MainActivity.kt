@@ -1,14 +1,14 @@
-package com.drive2share.app
+package com.secure2share.app
 
 import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.core.content.FileProvider
-import io.flutter.embedding.android.FlutterActivity
+import io.flutter.embedding.android.FlutterFragmentActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 import java.io.File
 
-class MainActivity : FlutterActivity() {
+class MainActivity : FlutterFragmentActivity() {
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
 
@@ -26,9 +26,48 @@ class MainActivity : FlutterActivity() {
                         result.error("SHARE_FAILED", error.message, null)
                     }
                 }
+                "shareText" -> {
+                    try {
+                        val args = call.arguments as? Map<*, *>
+                        shareText(args)
+                        result.success(null)
+                    } catch (error: Exception) {
+                        result.error("SHARE_FAILED", error.message, null)
+                    }
+                }
                 else -> result.notImplemented()
             }
         }
+    }
+
+    private fun shareText(args: Map<*, *>?) {
+        val text = args?.get("text") as? String
+            ?: throw IllegalArgumentException("Share text is missing.")
+        val subject = args["subject"] as? String ?: "Secure2share"
+
+        val installedPackages = shareTargetPackages.filter(::isPackageInstalled)
+        if (installedPackages.isEmpty()) {
+            throw IllegalStateException("WhatsApp or Telegram is not installed.")
+        }
+
+        val sendIntents = installedPackages.map { packageName ->
+            Intent(Intent.ACTION_SEND).apply {
+                type = "text/plain"
+                setPackage(packageName)
+                putExtra(Intent.EXTRA_TEXT, text)
+                putExtra(Intent.EXTRA_SUBJECT, subject)
+            }
+        }
+
+        val intent = if (sendIntents.size == 1) {
+            sendIntents.first()
+        } else {
+            Intent.createChooser(sendIntents.first(), "Share with").apply {
+                putExtra(Intent.EXTRA_INITIAL_INTENTS, sendIntents.drop(1).toTypedArray())
+            }
+        }
+
+        startActivity(intent)
     }
 
     private fun shareFile(args: Map<*, *>?) {
